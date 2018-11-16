@@ -182,7 +182,7 @@ def ae(
             'epoch': n_epochs + 1,
             'state_dict': model.state_dict(),
             'optimizer': model.optimizer.state_dict()}, filename=checkpoint)
-    if transform=True:
+    if transform == True:
         transformed_data = _transform(model, data, data_0, batch_size, whiten)
         return transformed_data, train_loss, test_loss
     else:
