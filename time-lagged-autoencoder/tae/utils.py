@@ -39,7 +39,8 @@ __all__ = [
     'get_sqrt_inverse',
     'whiten_data',
     'cca',
-    'Transform']
+    'Transform',
+    'save_checkpoint']
 
 ################################################################################
 #
