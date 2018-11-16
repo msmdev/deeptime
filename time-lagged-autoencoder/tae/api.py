@@ -124,7 +124,7 @@ def tica(
 
 def ae(
     data, dim=None, lag=1, n_epochs=50, validation_split=None,
-    batch_size=100, whiten=False, pin_memory=False, **kwargs):
+    batch_size=100, whiten=False, pin_memory=False, transform=True, checkpoint=None, **kwargs):
     '''Use a time-lagged autoencoder model for dimensionality reduction.
 
     We train a deep (or shallow) time-lagged autoencoder type neural network
@@ -139,9 +139,11 @@ def ae(
         batch_size (int): specify a batch size for the minibatch process
         whiten (boolean): set to True to whiten the transformed data
         pin_memory (boolean): make DataLoaders return pinned memory
+        transform (boolean): transform the input data by feeding it to the learned model
+        checkpoint (string): filename to store a checkpoint file of the learned model
 
     Returns:
-        (numpy.ndarray of list thereof): the transformed data
+        (numpy.ndarray of list thereof): the transformed data (only, if transform=True)
         (list of float): training loss
         (list of float): validation loss
     '''
@@ -175,13 +177,16 @@ def ae(
     model = _AE(size, dim, **ae_args)
     train_loss, test_loss = model.fit(
         train_loader, n_epochs, test_loader=test_loader)
-    _save_checkpoint({
-        'epoch': n_epochs + 1,
-        'state_dict': model.state_dict(),
-        'optimizer': model.optimizer.state_dict()})
-    #transformed_data = _transform(model, data, data_0, batch_size, whiten)
-    #return transformed_data, train_loss, test_loss
-    return train_loss, test_loss
+    if checkpoint is not None:
+        _save_checkpoint({
+            'epoch': n_epochs + 1,
+            'state_dict': model.state_dict(),
+            'optimizer': model.optimizer.state_dict()}, filename=checkpoint)
+    if transform=True:
+        transformed_data = _transform(model, data, data_0, batch_size, whiten)
+        return transformed_data, train_loss, test_loss
+    else:
+        return train_loss, test_loss
     
 def vae(
     data, dim=None, lag=1, n_epochs=50, validation_split=None,
