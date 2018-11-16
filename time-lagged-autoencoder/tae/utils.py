@@ -361,3 +361,12 @@ class Transform(object):
         self.y = BaseTransform(mean=y_mean, covariance=y_covariance)
     def __call__(self, x, y):
         return self.x(x), self.y(y)
+
+################################################################################
+#
+#   SAVING
+#
+################################################################################
+
+def save_checkpoint(state, filename='checkpoint.pth.tar'):
+    torch.save(state, filename)
