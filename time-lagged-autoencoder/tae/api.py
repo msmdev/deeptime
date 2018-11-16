@@ -28,6 +28,7 @@ from .utils import create_dataset as _create_dataset
 from .utils import random_split as _random_split
 from .utils import random_block_split as _random_block_split
 from .utils import whiten_data as _whiten_data
+from .utils import save_checkpoint as _save_checkpoint
 from torch import nn as _nn
 from torch.utils.data import DataLoader as _DataLoader
 
@@ -174,9 +175,14 @@ def ae(
     model = _AE(size, dim, **ae_args)
     train_loss, test_loss = model.fit(
         train_loader, n_epochs, test_loader=test_loader)
-    transformed_data = _transform(model, data, data_0, batch_size, whiten)
-    return transformed_data, train_loss, test_loss
-
+    _save_checkpoint({
+        'epoch': n_epochs + 1,
+        'state_dict': model.state_dict(),
+        'optimizer': model.optimizer.state_dict()})
+    #transformed_data = _transform(model, data, data_0, batch_size, whiten)
+    #return transformed_data, train_loss, test_loss
+    return train_loss, test_loss
+    
 def vae(
     data, dim=None, lag=1, n_epochs=50, validation_split=None,
     batch_size=100, whiten=False, pin_memory=False, **kwargs):
