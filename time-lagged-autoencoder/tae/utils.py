@@ -370,4 +370,4 @@ class Transform(object):
 ################################################################################
 
 def save_checkpoint(state, filename='checkpoint.pth.tar'):
-    torch.save(state, filename)
+    _torch.save(state, filename)
